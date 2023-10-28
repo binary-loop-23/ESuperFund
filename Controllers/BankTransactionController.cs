@@ -17,6 +17,7 @@ namespace esuperfund.Controllers
             _services = services;
         }
 
+        // Solution for 2. b)
         [HttpGet]
         public async Task<IActionResult> GetAllBankTransactionAsync()
         {

@@ -17,6 +17,7 @@ namespace esuperfund.Provider
             _logger = logger;
         }
 
+        // Solution for 2. f)
         public async Task CalculateClosingBalances()
         {
 

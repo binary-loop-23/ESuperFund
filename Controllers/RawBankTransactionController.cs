@@ -18,7 +18,7 @@ namespace esuperfund.Controllers
             _services = services;
         }
 
-
+        // Solution for 2. a)
         [HttpGet]
         public async Task<IActionResult> GetAllRawBankTransactionAsync()
         {
@@ -26,6 +26,7 @@ namespace esuperfund.Controllers
             return result.IsSuccess ? Ok(result.rawTransaction) : NotFound();
         }
 
+        // Solution for 2. c)
         [HttpPost]
         public async Task<IActionResult> CreateRawBankTransactionAsync(RawBankTransaction rawBankTransaction)
         {
@@ -37,6 +38,7 @@ namespace esuperfund.Controllers
             return result.IsSuccess ? Ok() : BadRequest();
         }
 
+        // Solution for 2. d)
         [HttpDelete("{transactionID}")]
         public async Task<IActionResult> DeleteRawBankTransactionAsync(int transactionID)
         {
@@ -45,6 +47,7 @@ namespace esuperfund.Controllers
             return result.IsSuccess ? Ok(result) : BadRequest();
         }
 
+        // Solution for 2. e)
         [HttpPut("{transactionID}")]
         public async Task<IActionResult> UpdateDepartmentAsync(int transactionID, RawBankTransaction transaction)
         {

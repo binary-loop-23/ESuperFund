@@ -16,14 +16,14 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
                options.UseMySQL(
                    builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+//registering the services
 builder.Services.AddScoped<IBankTransactionService, BankTransactionProvider>();
 
 builder.Services.AddScoped<IRawBankTransactionService, RawBankTransactionProvider>();
 
 builder.Services.AddTransient<IBalanceCalculatorService, BalanceCalculatorProvider>();
 
-
+//congifuring for the schedulers
 builder.Services.AddHangfire(configuration => configuration
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
@@ -51,7 +51,7 @@ app.UseHangfireDashboard();
 
 app.MapHangfireDashboard();
 
-//Job set to run daily to updae BankTransaction table 
+//Job set to run daily to update BankTransaction table 
 RecurringJob.AddOrUpdate<IBalanceCalculatorService>(x => x.CalculateClosingBalances(), Cron.Daily);
 
 app.Run();
