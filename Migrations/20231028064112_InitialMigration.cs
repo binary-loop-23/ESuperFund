@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -18,6 +19,8 @@ namespace esuperfund.Migrations
                 name: "BankTransactions",
                 columns: table => new
                 {
+                    TransactionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     AccountNumber = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Narration = table.Column<string>(type: "longtext", nullable: true),
@@ -26,7 +29,7 @@ namespace esuperfund.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankTransactions", x => new { x.AccountNumber, x.Date });
+                    table.PrimaryKey("PK_BankTransactions", x => x.TransactionId);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -34,14 +37,17 @@ namespace esuperfund.Migrations
                 name: "RawBankTransactions",
                 columns: table => new
                 {
+                    TransactionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     AccountNumber = table.Column<int>(type: "int", nullable: true),
-                    Date = table.Column<DateOnly>(type: "date", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Narration = table.Column<string>(type: "longtext", nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_RawBankTransactions", x => x.TransactionId);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
         }

@@ -20,18 +20,6 @@ namespace esuperfund.Data
         public DbSet<RawBankTransaction> RawBankTransactions { get; set; }
         public DbSet<BankTransaction> BankTransactions { get; set; }
 
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-
-            builder.Entity<BankTransaction>()
-               .HasKey(e => new { e.AccountNumber, e.Date });
-
-            builder.Entity<RawBankTransaction>()
-               .HasNoKey();
-        }
-
     }
 }
 

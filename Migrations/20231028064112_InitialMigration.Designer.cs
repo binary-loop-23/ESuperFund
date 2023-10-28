@@ -11,7 +11,7 @@ using esuperfund.Data;
 namespace esuperfund.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20231028040615_InitialMigration")]
+    [Migration("20231028064112_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -24,11 +24,12 @@ namespace esuperfund.Migrations
 
             modelBuilder.Entity("esuperfund.Models.BankTransaction", b =>
                 {
-                    b.Property<int>("AccountNumber")
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
+                    b.Property<int>("AccountNumber")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -36,16 +37,23 @@ namespace esuperfund.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Narration")
                         .HasColumnType("longtext");
 
-                    b.HasKey("AccountNumber", "Date");
+                    b.HasKey("TransactionId");
 
                     b.ToTable("BankTransactions");
                 });
 
             modelBuilder.Entity("esuperfund.Models.RawBankTransaction", b =>
                 {
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     b.Property<int?>("AccountNumber")
                         .HasColumnType("int");
 
@@ -55,11 +63,13 @@ namespace esuperfund.Migrations
                     b.Property<decimal?>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateOnly?>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Narration")
                         .HasColumnType("longtext");
+
+                    b.HasKey("TransactionId");
 
                     b.ToTable("RawBankTransactions");
                 });

@@ -1,9 +1,11 @@
 ﻿using esuperfund.Data;
+using esuperfund.Provider;
+using esuperfund.Service;
 using Microsoft.EntityFrameworkCore;
+using Hangfire;
+using Hangfire.Storage.SQLite;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -15,6 +17,20 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
                    builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
+builder.Services.AddScoped<IBankTransactionService, BankTransactionProvider>();
+
+builder.Services.AddScoped<IRawBankTransactionService, RawBankTransactionProvider>();
+
+builder.Services.AddTransient<IBalanceCalculatorService, BalanceCalculatorProvider>();
+
+
+builder.Services.AddHangfire(configuration => configuration
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSQLiteStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
+
+
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -30,6 +46,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHangfireDashboard();
+
+app.MapHangfireDashboard();
+
+//Job set to run daily to updae BankTransaction table 
+RecurringJob.AddOrUpdate<IBalanceCalculatorService>(x => x.CalculateClosingBalances(), Cron.Daily);
 
 app.Run();
 
