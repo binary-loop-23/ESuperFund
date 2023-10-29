@@ -11,12 +11,14 @@ namespace esuperfund.Provider
         private readonly ApplicationDBContext _context;
         private readonly ILogger<BankTransactionProvider> _logger;
 
+        // Dependency Inject the required services 
         public BankTransactionProvider(ApplicationDBContext context, ILogger<BankTransactionProvider> logger)
         {
             _context = context;
             _logger = logger;
         }
 
+        // get all transaction from the BankTransactions table
         public async Task<(bool IsSuccess, IEnumerable<BankTransaction>? bankTransaction, string? ErrorMessage)> GetAllCleanBankTransaction()
         {
             try

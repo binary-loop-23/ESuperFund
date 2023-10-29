@@ -23,7 +23,7 @@ builder.Services.AddScoped<IRawBankTransactionService, RawBankTransactionProvide
 
 builder.Services.AddTransient<IBalanceCalculatorService, BalanceCalculatorProvider>();
 
-//congifuring for the schedulers
+//congifuring for the schedulers 
 builder.Services.AddHangfire(configuration => configuration
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()

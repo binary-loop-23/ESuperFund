@@ -11,33 +11,22 @@ namespace esuperfund.Provider
         private readonly ApplicationDBContext _context;
         private readonly ILogger<RawBankTransactionProvider> _logger;
 
+        // Dependency Inject the required services 
         public RawBankTransactionProvider(ApplicationDBContext context, ILogger<RawBankTransactionProvider> logger)
         {
             _context = context;
             _logger = logger;
         }
 
+        // add a new transaction into the RawBankTransaction table
         public async Task<(bool IsSuccess, string? ErrorMessage)> AddRawBankTransaction(RawBankTransaction transaction)
         {
             try
             {
-                using (var dbfeed = await _context.Database.BeginTransactionAsync())
-                {
-                    try
-                    {
-                        _context.RawBankTransactions.Add(transaction);
-                        await _context.SaveChangesAsync();
-                        await dbfeed.CommitAsync();
-                        _logger.LogInformation($"New entry into RawBankTransaction table was successfull");
-                        return (true, null);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex.ToString());
-                        return (false, ex.Message);
-                    }
-                }
-
+                _context.RawBankTransactions.Add(transaction);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"New entry into RawBankTransaction table was successfull");
+                return (true, null);
             }
             catch (Exception ex)
             {
@@ -46,6 +35,7 @@ namespace esuperfund.Provider
             }
         }
 
+        // delete a new transaction into the RawBankTransaction table
         public async Task<(bool IsSuccess, string? ErrorMessage)> DeleteRawBankTransaction(int transactionID)
         {
             try
@@ -68,6 +58,7 @@ namespace esuperfund.Provider
             }
         }
 
+        // get all transaction from the RawBankTransaction table
         public async Task<(bool IsSuccess, IEnumerable<RawBankTransaction>? rawTransaction, string? ErrorMessage)> GetAllRawBankTransaction()
         {
             try
@@ -87,6 +78,7 @@ namespace esuperfund.Provider
             }
         }
 
+        // update a transaction from the RawBankTransaction table
         public async Task<(bool IsSuccess, RawBankTransaction? rawTransaction, string? ErrorMessage)> UpdateRawBankTransaction(int transactionID, RawBankTransaction transaction)
         {
             try
@@ -114,6 +106,7 @@ namespace esuperfund.Provider
                     }
                     catch (Exception ex)
                     {
+                        await dbfeedTransaction.RollbackAsync();
                         _logger?.LogError(ex.ToString());
                         return (false, null, ex.Message);
                     }
@@ -123,6 +116,38 @@ namespace esuperfund.Provider
             {
                 _logger?.LogError(ex.ToString());
                 return (false, null, ex.Message);
+            }
+        }
+
+
+        public async Task<(bool IsSuccess, string? ErrorMessage)> AddListOfDataRawBankTransaction(List<RawBankTransaction> transactionList)
+        {
+            try
+            {
+                foreach (var transaction in transactionList)
+                {
+                    using (var dbfeed = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            await _context.RawBankTransactions.AddAsync(transaction);
+                            await _context.SaveChangesAsync();
+                            await dbfeed.CommitAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            await dbfeed.RollbackAsync();
+                            _logger?.LogError(ex.ToString());
+                            return (false, ex.Message);
+                        }
+                    }
+                }
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex.ToString());
+                return (false, ex.Message);
             }
         }
 

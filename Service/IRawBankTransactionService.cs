@@ -15,7 +15,10 @@ namespace esuperfund.Service
         Task<(bool IsSuccess, string? ErrorMessage)> DeleteRawBankTransaction(int transactionID);
 
         //Update RawBankTransaction
-        Task<(bool IsSuccess, RawBankTransaction rawTransaction, string? ErrorMessage)> UpdateRawBankTransaction(int transactionID, RawBankTransaction transaction);
+        Task<(bool IsSuccess, RawBankTransaction? rawTransaction, string? ErrorMessage)> UpdateRawBankTransaction(int transactionID, RawBankTransaction transaction);
+
+        // add list of transactions into the RawBankTransaction table
+        Task<(bool IsSuccess, string? ErrorMessage)> AddListOfDataRawBankTransaction(List<RawBankTransaction> transactionList);
 
     }
 }

@@ -49,10 +49,23 @@ namespace esuperfund.Controllers
 
         // Solution for 2. e)
         [HttpPut("{transactionID}")]
-        public async Task<IActionResult> UpdateDepartmentAsync(int transactionID, RawBankTransaction transaction)
+        public async Task<IActionResult> UpdateRawBankTransactionAsync(int transactionID, RawBankTransaction transaction)
         {
             var result = await _services.UpdateRawBankTransaction(transactionID, transaction);
             return result.IsSuccess ? Ok(result.rawTransaction) : BadRequest(result.ErrorMessage);
+        }
+
+        // add list of transaction at once into the RawBankTransaction table
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<IActionResult> AddListOfTransactions(List<RawBankTransaction> transactionList)
+        {
+            if (transactionList != null)
+            {
+                var result = await _services.AddListOfDataRawBankTransaction(transactionList);
+                return result.IsSuccess ? Ok() : BadRequest(result.ErrorMessage);
+            }
+            return BadRequest();
         }
 
     }
